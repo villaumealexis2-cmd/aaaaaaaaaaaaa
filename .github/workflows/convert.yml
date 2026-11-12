@@ -1,0 +1,32 @@
+name: Convert banner to motd.json
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "mymotd.png"
+      - "generator.py"
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests Pillow
+
+      - name: Generate motd.json
+        run: python generator.py
+
+      - name: Upload motd.json
+        uses: actions/upload-artifact@v4
+        with:
+          name: motd-json
+          path: BannerMOTD/motd.json
+          if-no-files-found: error
